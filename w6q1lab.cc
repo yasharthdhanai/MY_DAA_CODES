@@ -3,6 +3,9 @@
 using namespace std;
 
 bool isPath(int cur, int dest, int n, vector<vector<int>> &adj, vector<bool> &vis) {
+    if(vis[cur]){
+        return false;
+    }
     if (cur == dest)
         return true;
     vis[cur] = true;

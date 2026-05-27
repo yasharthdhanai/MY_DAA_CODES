@@ -29,6 +29,9 @@ int main(){
 
         minHeap.pop();
 
+        if(a > distance[b])
+            continue;
+
         for(auto x : AdjList[minHeap.top().second]){
             int node = x.first;
             int weight = x.second;

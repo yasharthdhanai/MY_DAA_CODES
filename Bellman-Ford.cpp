@@ -3,7 +3,6 @@ using namespace std;
        
 int main(){
     int V, E;
-
     cin >> V >> E;
         
     vector<vector<pair<int, int>>> adj(V);

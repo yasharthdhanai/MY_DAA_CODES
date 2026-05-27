@@ -1,65 +1,50 @@
-#include <iostream>
-#include <vector>
-
-using namespace std;
-
-bool iscycle(vector<int>& visited, int v, vector<vector<int>>& AdjList, vector<int>& path) {
-    visited[v] = 1;
-
-    for(auto next : AdjList[v]) {
-        if(visited[next] == 0) {
-            path[next] = v;
-            if(iscycle(visited, next, AdjList, path)) {
-                return true;
-            }
-        }
-        else if(visited[next] == 1) { 
-            return true;
-        }
-    }
-
-    visited[v] = 2;
-    return false;
-}
-
-int main() {
-    int V, E;
-    cin >> V >> E; 
-
-    vector<vector<int>> AdjList(V);
-    vector<int> visited(V, 0);
-    int v1, v2;
-
-    for(int i = 0; i < E; i++) {
-        cin >> v1 >> v2;
-        AdjList[v1].push_back(v2); 
-    }
-
-    for(int i = 0; i < V; i++) {
-        cout << i << " :- ";
-        for (int j = 0; j < AdjList[i].size(); j++) {
-            cout << AdjList[i][j] << " ";
-        }
-        cout << endl;
-    }
-
-    vector<int> path(V, 0);
-    bool hasCycle = false;
-
-    for(int i = 0; i < V; i++) {
-        if(visited[i] == 0) {
-            if(iscycle(visited, i, AdjList, path)) {
-                hasCycle = true;
-                break;
-            }
-        }
-    }
-
-    if(hasCycle) {
-        cout << "Cycle is Present\n";
-    } else {
-        cout << "Cycle is not Present\n";
-    }
-
-    return 0;
-}
+#include<iostream>
+ #include<vector>
+  using namespace std; 
+ 
+bool dfs(int node, vector<vector<int>>& adjMatrix, vector<int>& vis, vector<int>& pathVis, int v) {     
+    vis[node] = 1;     
+    pathVis[node] = 1; 
+ 
+    for(int i = 0; i < v; i++) {         
+        if(adjMatrix[node][i] == 1) { 
+            if(vis[i] == 0) {                 
+                if(dfs(i, adjMatrix, vis, pathVis, v)) {                     
+                    return true; 
+                } 
+            } 
+            else if(pathVis[i] == 1) {                 
+                return true; 
+            } 
+        } 
+    } 
+ 
+    pathVis[node] = 0; // backtrack     return false; 
+} 
+ 
+bool isCycle(vector<vector<int>>& adjMatrix, int v) {     vector<int> vis(v, 0);     vector<int> pathVis(v, 0); 
+ 
+    for(int i = 0; i < v; i++) {         if(vis[i] == 0) {             if(dfs(i, adjMatrix, vis, pathVis, v)) {                 return true; 
+            } 
+        } 
+    } 
+    return false; 
+} 
+ 
+int main() { 
+    int v;     cin >> v; 
+ 
+    vector<vector<int>> adjMatrix(v, vector<int>(v)); 
+ 
+    for(int i = 0; i < v; i++) {         for(int j = 0; j < v; j++) { 
+            cin >> adjMatrix[i][j]; 
+        } 
+    } 
+ 
+    if(isCycle(adjMatrix, v)) {         cout << "Yes Cycle Exists" << endl; 
+    } else { 
+        cout << "No Cycle Exists" << endl; 
+    } 
+ 
+    return 0; 
+} 

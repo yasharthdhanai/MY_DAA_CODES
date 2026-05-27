@@ -1,50 +1,50 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-    // Finding path betweeen 2 vertices in undirected graph. (dfs) 
-    bool dfs(vector<vector<int>>& Adj_List, vector<int>& Vis, int S, int D){
-        if(S == D)
-            return true;
-        Vis[S] = 1;
-        for(int i=0 ; i<Adj_List[S].size(); i++){
-            if(! Vis[Adj_List[S][i]]){
-                bool x = dfs(Adj_List, Vis, Adj_List[S][i], D);
-                if(x)
-                return true;
-            }
-        }
+//Time Complexity : O(V+E) 
+bool ispathexists(vector<vector<int>>& AdjList,vector<bool>& visited, int st, int end){
+    if(visited[st]){
         return false;
     }
-    
+    else{
+        visited[st] = true;
+    }
+    bool ans = false;
+    if(st == end){
+        return true;
+    }
+    for(auto x : AdjList[st]){
+        if(ispathexists(AdjList, visited, x, end))
+            ans = true;
+    }
+    return ans;
+}
 int main(){
     int V, E;
-    cout << "Enter V : "; 
-    cin >> V; // (points)
-    cout << "Enter E : "; 
-    cin >> E; // (lines)
+    cout << "Enter Vertices : ";
+    cin >> V;
+    cout << "Enter Edges : ";
+    cin >> E;
 
-    vector<vector<int>> Adj_List(V);
-    vector<int> Visited(V, 0);
-    
+    vector<vector<int>> AdjList(V);
+    int v1, v2;
     for(int i=0 ; i<E ; i++){
-        int v1 , v2;
-        cout << "Enter v1 and v2 : ";
         cin >> v1 >> v2;
-        Adj_List[v1].push_back(v2);
-        // for undirected graph.
-        Adj_List[v2].push_back(v1);
+        AdjList[v1].push_back(v2);
+        AdjList[v2].push_back(v1);
     }
 
-    int sc, des; // source and dest vertices
-    cout << "Enter S : "; 
-    cin >> sc;
-    cout << "Enter D : "; 
-    cin >> des;
+    int st, end;
+    cin >> st;
+    cin >> end;
 
-    if(dfs(Adj_List, Visited, sc, des))
-        cout << "YES path exists! \n";
-    else
-        cout << "NO such path exists! \n";
-    
+    vector<bool> visited(V, 0);
+
+    if(ispathexists(AdjList, visited, st, end)){
+        cout<< "Yes Path Exists.";
+    }
+    else{
+        cout<< "No Path didn't Exists.";
+    }
     return 0;
 }
