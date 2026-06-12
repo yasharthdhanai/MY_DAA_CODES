@@ -21,7 +21,7 @@ int solve1(vector<vector<int>>& points, int day, int last){ // M1 by recurssion
     return a;
 }
 
-int solve2(vector<vector<int>>& points, vector<vector<int>>& dp, int day, int last){
+int solve2(vector<vector<int>>& points, vector<vector<int>>& dp, int day, int last){ // M2 by memoization
     int a=0;
     if(day == 0){ // basecase.
         for(int i=0; i<3; i++){
@@ -44,7 +44,54 @@ int solve2(vector<vector<int>>& points, vector<vector<int>>& dp, int day, int la
     return a;
 }
 
-    
+int solve3 (vector<vector<int>>& points){ // M3 by Tabulation.
+    int n = points.size();
+    vector<vector<int>>dp(n, vector<int>(4, 0));
+
+    dp[0][0] = max(points[0][1], points[0][2]);
+    dp[0][1] = max(points[0][0], points[0][2]);
+    dp[0][2] = max(points[0][0], points[0][1]);
+    dp[0][3] = max(points[0][0], max(points[0][1], points[0][2]));
+
+    for(int day=1; day<n; day++){
+        for(int last=0; last<4; last++){
+            dp[day][last] = 0;
+            for(int i=0; i<3; i++){                        //  <--|    Same as M2
+                if(i != last){                             //     |    we are just
+                    int x = points[day][i] + dp[day-1][i]; //     |--- filling the
+                    dp[day][last] = max(dp[day][last], x); //     |    dp table in 
+                }                                          //     |    bottom up manner.
+            }                                              //  <--|
+        }
+    }
+    return dp[n-1][3];
+}
+
+int solve4 (vector<vector<int>>& points){   // M4 by Space Optimization.
+    int n = points.size();
+    vector<int> prev(4, 0);
+
+    prev[0] = max(points[0][1], points[0][2]);
+    prev[1] = max(points[0][0], points[0][2]);
+    prev[2] = max(points[0][0], points[0][1]);
+    prev[3] = max(points[0][0], max(points[0][1], points[0][2]));
+
+    for(int day=1; day<n; day++){
+        vector<int> curr(4, 0);
+        for(int last=0; last<4; last++){
+            curr[last] = 0;
+            for(int i=0; i<3; i++){                        //  <--|    Same as M2
+                if(i != last){                             //     |    we are just
+                    int x = points[day][i] + prev[i];      //     |--- filling the
+                    curr[last] = max(curr[last], x);       //     |    dp table in 
+                }                                          //     |    bottom up manner.
+            }                                              //  <--|
+        }
+        prev = curr;
+    }
+    return prev[3];
+}
+
 int main(){
     int n;
     cin >> n; // (n >= 1)
@@ -57,6 +104,7 @@ int main(){
     vector<vector<int>>dp (n, vector<int>(4, -1));
     cout << solve1(points, n-1, 3) << endl;
     cout << solve2(points, dp, n-1, 3) << endl;
-
+    cout << solve3(points) << endl;
+    cout << solve4(points) << endl;
     return 0;
 }
